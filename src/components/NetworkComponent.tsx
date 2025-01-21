@@ -4,6 +4,7 @@ import { useNetwork } from '../context/NetwokrContext';
 import { useGraphFunctions } from '../hooks/useGraphFunctions';
 import { useSheets } from '../hooks/useSheets';
 import { saveData, getData } from '../utils/indexedDB';
+import html2canvas from 'html2canvas';
 
 interface NetworkComponentProps {
   handleContextMenu: (params: any) => void;
@@ -301,7 +302,30 @@ const NetworkComponent: React.FC<NetworkComponentProps> = ({handleContextMenu}) 
     }
   }, [selectedSheet, network, nodes, edges]);
 
-  return <div ref={networkContainer} style={{ width: '100%', height: '92vh' }} />;
+
+  const exportNetworkToImage = () => {
+    if (!network) return;
+    // Imprimir los nodos en la consola
+    console.log('Nodos:', nodes.get());
+    // Obtener el canvas de la red
+    const canvas = network.canvas.frame.canvas;
+  
+    // Convertir el canvas a una imagen (data URL)
+    const dataURL = canvas.toDataURL('image/png');
+  
+    // Crear un enlace para descargar la imagen
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = 'network.png'; // Nombre del archivo de descarga
+    link.click();
+  };
+
+  return (
+  <>
+    <div ref={networkContainer} style={{ width: '100%', height: '92vh' }} />
+    <button onClick={exportNetworkToImage}>Export as Image</button>
+  </>
+  );
 };
 
 export default NetworkComponent;

@@ -150,7 +150,7 @@ const useContextMenu = () => {
             });
             //console.log('RESPUESTA:',respuesta);
             if (respuesta.data.remisiones.length > 0) {
-               nodes.map((n: any) => {
+               nodes.map(async(n: any) => {
 
 
                 if (n.id === node.id) {
@@ -161,7 +161,7 @@ const useContextMenu = () => {
                         .map((item: any) => item.Telefono)
                         .filter((telefono: string) => !["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"].includes(telefono))
                         .join(', ');
-                    nodoModificado.image = `http://172.18.110.25/sarai/files/Remisiones/${respuesta.data.remisiones[0].Ficha}/FotosHuellas/${respuesta.data.remisiones[0].No_Remision}/rostro_frente.jpeg`
+                    nodoModificado.image = await convertToBase64(`http://172.18.110.25/sarai/files/Remisiones/${respuesta.data.remisiones[0].Ficha}/FotosHuellas/${respuesta.data.remisiones[0].No_Remision}/rostro_frente.jpeg`)
                     let viejosAtributos = nodoModificado.atributos;
                     nodoModificado.atributos = {
                         ...nodoModificado.atributos,
@@ -254,7 +254,7 @@ const useContextMenu = () => {
             });
             //console.log('RESPUESTA:',respuesta);
             if (respuesta.data.remisiones.length > 0) {
-                nodes.map(n => {
+                nodes.map(async (n) => {
                 if (n.id === node.id) {
                     let nodoModificado = n;
                     //console.log('NODO MODIFICADO:',nodoModificado);
@@ -263,7 +263,7 @@ const useContextMenu = () => {
                         .map((item: any) => item.Telefono)
                         .filter((telefono: string) => !["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"].includes(telefono))
                         .join(', ');
-                    nodoModificado.image = `http://172.18.110.25/sarai/files/Remisiones/${respuesta.data.remisiones[0].Ficha}/FotosHuellas/${respuesta.data.remisiones[0].No_Remision}/rostro_frente.jpeg`
+                    nodoModificado.image = await convertToBase64(`http://172.18.110.25/sarai/files/Remisiones/${respuesta.data.remisiones[0].Ficha}/FotosHuellas/${respuesta.data.remisiones[0].No_Remision}/rostro_frente.jpeg`)
                     let viejosAtributos = nodoModificado.atributos;
                     nodoModificado.atributos = {
                         ...nodoModificado.atributos,
@@ -1124,7 +1124,23 @@ const useContextMenu = () => {
         }
     };
 
-
+    const convertToBase64 = async (url: string): Promise<string> => {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            return new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    resolve(reader.result as string);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error('Error converting image to base64:', error);
+            return '';
+        }
+    };
 
 
     return {
