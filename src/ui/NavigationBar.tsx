@@ -10,6 +10,7 @@ import { useSaveLoadNetwork } from "../hooks/useSaveLoadNetwork";
 import FisicasCheck from "../components/FisicasCheck";
 import { useCluster } from "../hooks/useCluster";
 import { useWeight } from "../hooks/useWeight";
+import { FaImage,FaFilePdf  } from "react-icons/fa";
 
 
 interface NavigationBarProps {
@@ -29,7 +30,7 @@ export const NavigationBar:React.FC<NavigationBarProps> = ({ handleMenuClick, is
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { network, fisicas, setFisicas } = useNetwork();
-  const { saveGraph, loadGraph, fileInputRef } = useSaveLoadNetwork();
+  const { saveGraph, loadGraph, fileInputRef, exportNetworkToImage, exportNetworkToPDF } = useSaveLoadNetwork();
   const { onClusterNoPersonas, onClusterNoInspecciones, onClusterNoTelefonos, onClusterNoVehiculos, onOpenClusters} = useCluster();
   const { establishCenter } = useWeight();
 
@@ -242,6 +243,16 @@ export const NavigationBar:React.FC<NavigationBarProps> = ({ handleMenuClick, is
                             onChange={loadGraph}
                         />
                       <MdOutlineUploadFile className="mr-2"/>Cargar Red
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="inline-flex items-center w-full px-4 py-2 hover:bg-gray-300" onClick={exportNetworkToImage} id="exportGraphImage">
+                      <FaImage className="mr-2"/>Guardar Red como Imagen
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="inline-flex items-center w-full px-4 py-2 hover:bg-gray-300" onClick={exportNetworkToPDF} id="exportGraphImage">
+                      <FaFilePdf  className="mr-2"/>Guardar Red como PDF
                     </a>
                   </li>
                 </ul>

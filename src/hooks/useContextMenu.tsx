@@ -848,7 +848,7 @@ const useContextMenu = () => {
         //console.log('RESPUESTA:',respuesta.data.vehiculos);
         if(respuesta.data.vehiculos.length > 0){
             //console.warn('SI HAY VEHICULOS');
-            nodes.map(n => {
+            nodes.map(async(n) => {
                 if (n.id === node.id) {
                     let nodoModificado = n;
                     //console.log('NODO MODIFICADO:',nodoModificado);
@@ -881,7 +881,7 @@ const useContextMenu = () => {
                             }))
                         }
                     };
-                    nodoModificado.image = `http://172.18.110.25/sarai/public/files/Vehiculos/${respuesta.data.vehiculos[0].ID_VEHICULO}/Fotos/costado_conductor.jpeg`
+                    nodoModificado.image = await convertToBase64(`http://172.18.110.25/sarai/public/files/Vehiculos/${respuesta.data.vehiculos[0].ID_VEHICULO}/Fotos/costado_conductor.jpeg`)
                     nodoModificado.label = ``;
                     nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.vehiculos.length})</b>`;
                     let placasjoin, nivjoin, nombresjoin, fechasjoin, remisionesjoin;

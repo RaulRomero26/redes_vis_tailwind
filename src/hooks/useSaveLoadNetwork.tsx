@@ -2,10 +2,11 @@ import { useRef } from 'react';
 import { useNetwork } from '../context/NetwokrContext';
 import { countEdges } from '../helpers/countEdges';
 import { useSheets } from './useSheets';
+import pdfMake from 'pdfmake/build/pdfmake';
 
 export const useSaveLoadNetwork = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { nodes, edges } = useNetwork();
+    const { nodes, edges, network } = useNetwork();
     const { selectedSheet } = useSheets();
 
     // Función para guardar el grafo en un archivo JSON
@@ -72,9 +73,86 @@ export const useSaveLoadNetwork = () => {
         }
     };
 
+    const exportNetworkToImage = () => {
+        if (!network) return;
+
+        // Guardar el tamaño original del canvas
+        const originalWidth =(network as any).canvas?.frame?.canvas?.width;
+        const originalHeight = (network as any).canvas?.frame?.canvas?.height;
+
+        // Hacer el canvas gigante
+        network.setSize('5000px', '4000px');
+        network.fit();
+
+        // Esperar a que el canvas se redimensione
+        setTimeout(() => {
+            // Obtener el canvas de la red
+            const canvas = (network as any).canvas?.frame?.canvas;
+
+            // Convertir el canvas a una imagen (data URL)
+            const dataURL = canvas.toDataURL('image/png');
+
+            // Crear un enlace para descargar la imagen
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'network.png'; // Nombre del archivo de descarga
+            link.click();
+            link.remove();
+
+            // Regresar el canvas a su tamaño original
+            network.setSize(`${originalWidth}px`, `${originalHeight}px`);
+            network.fit();
+        }, 1000); // Esperar 1 segundo para asegurarse de que el canvas se haya redimensionado
+      };
+      
+
+    const exportNetworkToPDF = () => {
+        if (!network) return;
+
+        // Guardar el tamaño original del canvas
+        const originalWidth =(network as any).canvas?.frame?.canvas?.width;
+        const originalHeight = (network as any).canvas?.frame?.canvas?.height;
+
+        // Hacer el canvas gigante
+        network.setSize('5000px', '4000px');
+        network.fit();
+
+        // Esperar a que el canvas se redimensione
+        setTimeout(() => {
+            // Obtener el canvas de la red
+            const canvas = (network as any).canvas?.frame?.canvas;
+
+            // Convertir el canvas a una imagen (data URL)
+            const dataURL = canvas.toDataURL('image/png');
+
+            const docDefinition = {
+                pageSize: {
+                    width: 5000,
+                    height: 4000
+                },
+                content: [
+                    {
+                        image: dataURL,
+                        width: 5000,
+                        height: 4000
+                    }
+                ]
+            };
+
+            pdfMake.createPdf(docDefinition).download('network.pdf');
+
+            // Regresar el canvas a su tamaño original
+            network.setSize(`${originalWidth}px`, `${originalHeight}px`);
+            network.fit();
+        }, 1000); // Esperar 1 segundo para asegurarse de que el canvas se haya redimensionado
+    }
+    
+
     return {
         saveGraph,
         loadGraph,
-        fileInputRef
+        fileInputRef,
+        exportNetworkToImage,
+        exportNetworkToPDF
     };
 };
