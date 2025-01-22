@@ -948,6 +948,7 @@ const useContextMenu = () => {
             //console.log('ES UN CONTACTO');
             if(node.atributos.Telefono === '') return;
             let invalidPhones = ["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"];
+            if (/^0+$/.test(node.atributos.Telefono)) return;
             if(invalidPhones.find(valor => valor === node.atributos.Telefono) ) return;
             const newNode = createNodeData(
                 `${node.atributos.Telefono}`, 
@@ -991,6 +992,7 @@ const useContextMenu = () => {
             respuesta.map((item: any) => {
                 //console.log('item:',item);
                 let invalidPhones = ["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"];
+                if (/^0+$/.test(node.atributos.Telefono)) return;
                 if(invalidPhones.find(valor => valor === item.Telefono) ) return;
                 const newNode = createNodeData(
                     `${item.Telefono}`, 

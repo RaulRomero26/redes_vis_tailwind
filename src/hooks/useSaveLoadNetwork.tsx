@@ -168,100 +168,6 @@ export const useSaveLoadNetwork = () => {
           }
         }, 1000); // Esperar 1 segundo para asegurarse de que el canvas se haya redimensionado
     };
-
-    // const exportNetworkToPDFNode = () => {
-    //     if (!network) return;
-    
-    //     // Factor de escala para alta resolución
-    //     const scaleFactor = 4;
-    
-    //     // Obtener el canvas original de la red
-    //     const originalCanvas = (network as any).canvas?.frame?.canvas;
-    //     if (!originalCanvas) {
-    //         console.error("No se pudo obtener el canvas de la red.");
-    //         return;
-    //     }
-    
-    //     // Obtener las dimensiones originales del canvas
-    //     const originalWidth = originalCanvas.width;
-    //     const originalHeight = originalCanvas.height;
-    
-    //     // Calcular los límites de los nodos
-    //     const nodes = network.body.nodes;
-    //     let minX = Infinity,
-    //         minY = Infinity,
-    //         maxX = -Infinity,
-    //         maxY = -Infinity;
-    
-    //     Object.values(nodes).forEach((node: any) => {
-    //         const { x, y } = node.options;
-    //         if (x < minX) minX = x;
-    //         if (y < minY) minY = y;
-    //         if (x > maxX) maxX = x;
-    //         if (y > maxY) maxY = y;
-    //     });
-    
-    //     // Añadir margen alrededor de los nodos
-    //     const margin = 50;
-    //     minX -= margin;
-    //     minY -= margin;
-    //     maxX += margin;
-    //     maxY += margin;
-    
-    //     const graphWidth = maxX - minX;
-    //     const graphHeight = maxY - minY;
-    
-    //     // Crear un canvas de alta resolución
-    //     const highResCanvas = document.createElement("canvas");
-    //     const newWidth = graphWidth * scaleFactor;
-    //     const newHeight = graphHeight * scaleFactor;
-    
-    //     highResCanvas.width = newWidth;
-    //     highResCanvas.height = newHeight;
-    
-    //     const ctx = highResCanvas.getContext("2d");
-    //     if (!ctx) {
-    //         console.error("Error al obtener el contexto del canvas de alta resolución.");
-    //         return;
-    //     }
-    
-    //     // Escalar y trasladar el contenido al nuevo canvas
-    //     ctx.scale(scaleFactor, scaleFactor);
-    //     ctx.translate(-minX, -minY);
-    
-    //     // Dibujar el contenido del canvas original en el de alta resolución
-    //     ctx.drawImage(originalCanvas, 0, 0, originalWidth, originalHeight);
-    
-    //     // Convertir el canvas a una imagen
-    //     const dataURL = highResCanvas.toDataURL("image/png");
-    
-    //     // Crear el documento PDF
-    //     const docDefinition = {
-    //         pageSize: {
-    //             width: newWidth ,
-    //             height: newHeight ,
-    //         },
-    //         content: [
-    //             {
-    //                 image: dataURL,
-    //                 width: newWidth / scaleFactor,
-    //                 height: newHeight / scaleFactor,
-    //             },
-    //         ],
-    //         pageMargins: [0, 0, 0, 0], // Sin márgenes
-    //     };
-    
-    //     // Descargar el PDF
-    //     pdfMake.createPdf(docDefinition).download("network.pdf");
-    
-    //     console.log("PDF generado correctamente.");
-    
-    //     // Restaurar el tamaño original de la red
-    //     originalCanvas.width = originalWidth;
-    //     originalCanvas.height = originalHeight;
-    //     network.redraw();
-    // };
-    
     
     return {
         saveGraph,
@@ -269,6 +175,5 @@ export const useSaveLoadNetwork = () => {
         fileInputRef,
         exportNetworkToImage,
         exportNetworkToPDF,
-        // exportNetworkToPDFNode
     };
 };
