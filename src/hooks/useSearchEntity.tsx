@@ -418,7 +418,7 @@ const searchPersonasBanda = async ({ entidad, payload }: { entidad: string; payl
 
   try {
     const response = await toast.promise(
-      fetch('http://localhost:8087/api/search/banda-aura', {
+      fetch('http://172.18.110.90:8087/api/search/banda-aura', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
