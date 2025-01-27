@@ -384,6 +384,64 @@ const searchInspeccionVehiculo = async ({ entidad, payload }: { entidad: string;
   }
 };
 
+const searchAura = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
+  console.log('Buscando Nombre en Aura', entidad, payload);
+
+  try {
+    const response = await toast.promise(
+      fetch('http://localhost:8087/api/search/redes-aura', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }),
+      {
+        loading: 'Buscando nombre en redes...',
+        success: 'Persona encontrada en redes de vinculo .',
+        error: 'Error al buscar la inspección del vehículo.',
+      }
+    );
+
+    const data = await response.json();
+    setData(data.data.vehiculos);
+
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    toast.error('Ocurrió un error inesperado al buscar la inspección del vehículo.');
+  }
+};
+
+const searchPersonasBanda = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
+  console.log('Buscando Banda en Aura', entidad, payload);
+
+  try {
+    const response = await toast.promise(
+      fetch('http://localhost:8087/api/search/banda-aura', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }),
+      {
+        loading: 'Buscando banda en redes...',
+        success: 'Banda encontrada en redes de vinculo .',
+        error: 'Error al buscar la banda.',
+      }
+    );
+
+    const data = await response.json();
+    setData(data.data.personas);
+
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    toast.error('Ocurrió un error inesperado al buscar la inspección de la banda');
+  }
+};
+
   return {
     searchData,
     searchPhone,
@@ -398,6 +456,8 @@ const searchInspeccionVehiculo = async ({ entidad, payload }: { entidad: string;
     buscarLlamadas911,
     searchPersonaInspeccion,
     searchInspeccionVehiculo,
+    searchAura,
+    searchPersonasBanda,
     data,
   };
 };

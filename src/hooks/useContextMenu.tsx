@@ -31,6 +31,8 @@ const useContextMenu = () => {
         searchVehiculoRemision,
         buscarContactosPorTelefono,
         searchPersonaInspeccion,
+        searchAura,
+        searchPersonasBanda
     } = useSearchEntity();
 
     const { addNode,addEdge } = useGraphFunctions();
@@ -64,6 +66,7 @@ const useContextMenu = () => {
                 if(opcion === 'Extraer Personas') handleSearchPersonasInspeccion(); //Busca Personas a partir de una inspeccion
                 /* --------- FUNCIONES QUE ME EXTRAEN DIRECTAMENTE SIN NECESIDAD DE MODAL ----------- */
                 if(opcion === 'Extraer Telefonos') handleExtraerTelefonos(node); // Buscar Telefonos si hay remision
+                if(opcion === 'Integrantes Banda') handleSearchBanda(node); // Buscar integrantes de una banda
                 /* --------- ESTAS FUNCIONES ME DISPARAN UN MODAL ----------- */
                 if(opcion === 'Extraer Contactos') handleContactosModal(node); // Buscar Contactos si hay remision
                 if(opcion === 'Detenido Con') handleDetenidoConModal(node); // Buscar Detenido Con si hay remision
@@ -474,6 +477,73 @@ const useContextMenu = () => {
         }
     };
 
+    const handleSearchAura = async(node:NodeData) => {
+        console.warn('Buscando Aura', node);
+        let respuesta:any;
+        if (node.type === 'entrada-persona' || node.type === 'persona' || node.type === 'contacto') {
+            respuesta = await searchAura({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
+            console.log('RESPUESTA:',respuesta.data.aura);
+            if (respuesta.data.aura && respuesta.data.aura.length > 0) {
+                nodes.map(n => {
+                    if (n.id === node.id) {
+                        let nodoModificado = n;
+                        //console.log('NODO MODIFICADO:',nodoModificado);
+                        nodoModificado.data.aura = respuesta.data.aura;
+                        let viejosAtributos = nodoModificado.atributos;
+                        nodoModificado.atributos = {
+                            ...nodoModificado.atributos,
+                            aura: {
+                                aura: respuesta.data.aura.map((item: any) => {
+                                    if (viejosAtributos.aura && viejosAtributos.aura.aura) {
+                                        if (viejosAtributos.aura.aura.find((element: any) => element?.Id_Persona === item.Id_Persona)) return null;
+                                    }
+                                    return {
+                                        Id_Persona: item.Id_Persona,
+                                        Id_Seguimiento: item.Id_Seguimiento,
+                                        Banda: item.Nombre_grupo_delictivo,
+                                        Nombre_completo: item.Nombre_completo,
+                                        Curp: item.Curp,
+                                        Telefono: item.Telefono,
+                                        Alias: item.Alias,
+                                    };
+                                })
+                            }
+                        };
+    
+    
+                        nodoModificado.editables = {
+                            ...nodoModificado.editables,
+                            aura_label: `Aura:)`,
+                            aura_seguimiento: respuesta.data.aura.map((item: any) => item.Id_Seguimiento).join(', '),
+                            aura_banda: respuesta.data.aura.map((item: any) => item.Nombre_grupo_delictivo).join(', '),
+                        };
+    
+                        nodoModificado.visibles = {
+                            ...nodoModificado.visibles,
+                            aura_label: true,
+                            aura_seguimiento: true,
+                            aura_banda: true
+                        };
+    
+                        // Actualiza la etiqueta sin duplicar información
+                        const newLabelParts = [
+                            `<b>Aura: </b>`,
+                            `<b>Seguimiento: </b>${nodoModificado.editables?.aura_seguimiento}`,
+                            `<b>Banda: </b>${nodoModificado.editables?.aura_banda}`
+                        ];
+    
+                        const existingLabelParts = nodoModificado.label.split('\n').filter((part:any) => !newLabelParts.includes(part));
+                        nodoModificado.label = [...existingLabelParts, ...newLabelParts].join('\n');
+    
+                        nodes.update(nodoModificado);
+                        return nodoModificado;
+                    }
+                    return n;
+                });
+            }
+        }
+    };
+
     const handleSearchInspeccion = async() => {
         let payload = {};
         let respuesta:any;
@@ -605,69 +675,70 @@ const useContextMenu = () => {
     };
 
     const handleSearchVehiculosInspeccion = async() => {
-    const selectedNodes = network?.getSelectedNodes() || [];
-    if (selectedNodes.length === 0) {
-        toast.error('No hay nodos seleccionados.');
-        return;
-    }
-    for (const nodeId of selectedNodes) {
-        const node = nodes.get(nodeId);
-        if (node) {
-            const respuesta = await searchVehiculoInspeccion({ entidad: node.type || '', payload: { inspeccion: node.atributos.Id_Inspeccion, placas: node.atributos.Placas_Vehiculo, NIV: node.atributos.NIV } });
-            //console.log('RESPUESTA:',respuesta.data.vehiculos);
-            if (respuesta.data.vehiculos.length > 0) {
-                respuesta.data.vehiculos.map((item: any) => {
-                    //console.log('item:',item);
-                    if (item.Placas === '') return;
-                    const newNode = createNodeData(
-                        `${item.Placas_Vehiculo.trim()}/${item.NIV.trim()}`,
-                        `${item.Placas_Vehiculo.trim()}/${item.NIV.trim()}`,
-                        `${item.Placas_Vehiculo.trim()}/${item.NIV.trim()}`,
-                        "image",
-                        15,
-                        {
-                            background:"rgba(255, 255, 255, 0.8)",
-                            border: "rgba(255, 255, 255, 0)",
-                            highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
-                            hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
-                          }, 
-                        "vehiculo",
-                        'vehiculo',
-                        item,
-                        {
-                            Marca: item.Marca,
-                            Modelo: item.Modelo,
-                            Tipo: item.Tipo,
-                            Placas: item.Placas_Vehiculo,
-                            Color: item.Color,
-                            NIV: item.NIV,
-                            Submarca: item.Submarca,
-                            Colocacion_Placas: item.Colocacion_Placa,
-                        },
-                        0,
-                        0
-                    );
-                    //console.warn('NEW NODE TO EDGE:',newNode);
-                    addNode({ newNode: newNode, parentPosition: network?.getPosition(node.id) }, (data: any) => {
-                        //console.log('Node added:', data.status);
-                        if (data.status == false) {
-                            console.error('Error adding node');
-                            addEdge({ from: node.id, to: data.encontro.id, label: 'Vehiculo' }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
-                        } else {
-                            if (newNode && data.status == true) {
-                                addEdge({ from: node.id, to: newNode.id, label: 'Vehiculo' }, (data: any) => {
+        const selectedNodes = network?.getSelectedNodes() || [];
+        if (selectedNodes.length === 0) {
+            toast.error('No hay nodos seleccionados.');
+            return;
+        }
+        for (const nodeId of selectedNodes) {
+            const node = nodes.get(nodeId);
+            if (node) {
+                const respuesta = await searchVehiculoInspeccion({ entidad: node.type || '', payload: { inspeccion: node.atributos.Id_Inspeccion, placas: node.atributos.Placas_Vehiculo, NIV: node.atributos.NIV } });
+                //console.log('RESPUESTA:',respuesta.data.vehiculos);
+                if (respuesta.data.vehiculos.length > 0) {
+                    respuesta.data.vehiculos.map((item: any) => {
+                        //console.log('item:',item);
+                        if (item.Placas === '') return;
+                        const newNode = createNodeData(
+                            `${item.Placas_Vehiculo.trim()}/${item.NIV.trim()}`,
+                            `${item.Placas_Vehiculo.trim()}/${item.NIV.trim()}`,
+                            `${item.Placas_Vehiculo.trim()}/${item.NIV.trim()}`,
+                            "image",
+                            15,
+                            {
+                                background:"rgba(255, 255, 255, 0.8)",
+                                border: "rgba(255, 255, 255, 0)",
+                                highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
+                                hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
+                            }, 
+                            "vehiculo",
+                            'vehiculo',
+                            item,
+                            {
+                                Marca: item.Marca,
+                                Modelo: item.Modelo,
+                                Tipo: item.Tipo,
+                                Placas: item.Placas_Vehiculo,
+                                Color: item.Color,
+                                NIV: item.NIV,
+                                Submarca: item.Submarca,
+                                Colocacion_Placas: item.Colocacion_Placa,
+                            },
+                            0,
+                            0
+                        );
+                        //console.warn('NEW NODE TO EDGE:',newNode);
+                        addNode({ newNode: newNode, parentPosition: network?.getPosition(node.id) }, (data: any) => {
+                            //console.log('Node added:', data.status);
+                            if (data.status == false) {
+                                console.error('Error adding node');
+                                addEdge({ from: node.id, to: data.encontro.id, label: 'Vehiculo' }, (data: any) => {
                                     console.log('Edge added:', data);
                                 });
+                            } else {
+                                if (newNode && data.status == true) {
+                                    addEdge({ from: node.id, to: newNode.id, label: 'Vehiculo' }, (data: any) => {
+                                        console.log('Edge added:', data);
+                                    });
+                                }
                             }
-                        }
+                        });
                     });
-                });
+                }
             }
         }
-    }
     };
+        
 
     const handleSearchTelefono = async (node: NodeData) => {
         try {
@@ -737,7 +808,7 @@ const useContextMenu = () => {
         } catch (error) {
           console.error('Error in handleSearchTelefono:', error);
         }
-      };
+    };
       
     const handleSearchRemisionesTelefono = async(node:NodeData) => { 
 
@@ -1109,6 +1180,7 @@ const useContextMenu = () => {
                 } else {
                     await handleSearchRemisiones(node); //Recuerda con el await lo hacemos secuencial para no repetir informacion en el label del nodo
                     await handleSearchHistorico(node);
+                    await handleSearchAura(node);
                 }
             }
         }
@@ -1125,6 +1197,68 @@ const useContextMenu = () => {
             }
         }
     };
+
+    const handleSearchBanda = async() => {
+        const selectedNodes = network?.getSelectedNodes() || [];
+        if (selectedNodes.length === 0) {
+            toast.error('No hay nodos seleccionados.');
+            return;
+        }
+        for (const nodeId of selectedNodes) {
+            const node = nodes.get(nodeId);
+            if (node) {
+                const respuesta = await searchPersonasBanda({ entidad: node.type || '', payload: { Banda: node.atributos.aura.aura[0].Banda } });
+                console.log('RESPUESTA:',respuesta.data.personas);
+                if (respuesta.data.personas.length > 0) {
+                    respuesta.data.personas.map((item: any) => {
+                        //console.log('item:',item);
+                        if (item.Nombre === '') return;
+                        const newNode = createNodeData(
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
+                            "image",
+                            15,
+                            {
+                                background:"rgba(255, 255, 255, 0.8)",
+                                border: "rgba(255, 255, 255, 0)",
+                                highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
+                                hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
+                              }, 
+                            "persona",
+                            'persona',
+                            item,
+                            {
+                                Nombre: item.Nombre,
+                                Ap_Paterno: item.Ap_Paterno,
+                                Ap_Materno: item.Ap_Materno,
+                                Banda: item.Nombre_grupo_delictivo,
+                                Telefono: item.Telefono
+                            },
+                            0,
+                            0
+                        );
+                        //console.warn('NEW NODE TO EDGE:',newNode);
+                        addNode({ newNode: newNode, parentPosition: network?.getPosition(node.id) }, (data: any) => {
+                            //console.log('Node added:', data.status);
+                            if (data.status == false) {
+                                console.error('Error adding node');
+                                addEdge({ from: node.id, to: newNode.id, label: 'Integrande de la Banda' }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            } else {
+                                if (newNode && data.status == true) {
+                                    addEdge({ from: node.id, to: newNode.id, label: 'Integrande de la Banda' }, (data: any) => {
+                                        console.log('Edge added:', data);
+                                    });
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        }
+    }
 
     const convertToBase64 = async (url: string): Promise<string> => {
         try {

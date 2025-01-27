@@ -26,6 +26,7 @@ const rules: { [key: string]: (node: NodeData) => boolean | any } = {
   'Extraer Vehiculos': (node: NodeData) => node.type === 'inspeccion',
   'Detenido Con': (node: NodeData) => node.entidad === 'persona' && node.atributos.detenciones && node.atributos.detenciones.sarai,
   'Extraer Contactos': (node: NodeData) => node.entidad === 'persona' && node.atributos.detenciones && node.atributos.detenciones.sarai,
+  'Integrantes Banda': (node: NodeData) => node.entidad === 'persona' && node.atributos.aura && node.atributos.aura.aura,
   // Agrega más reglas según sea necesario
 };
 
@@ -88,6 +89,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, edgeId, onSearc
                 <li className="font-bold">REMISIONES</li>
                 <li className={`p-1 ${!isOptionEnabled('Detenido Con') ? 'bg-gray-300 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-200'}`} onClick={() => onSearchExtended('Detenido Con')}>DETENIDO CON</li>
                 <li className={`p-1 ${!isOptionEnabled('Extraer Contactos') ? 'bg-gray-300 cursor-not-allowed': 'cursor-pointer hover:bg-gray-200'}`} onClick={() => onSearchExtended('Extraer Contactos')} >CONTACTOS REF</li>
+                <li className="font-bold">A.U.R.A.</li>
+                <li className={`p-1 ${!isOptionEnabled('Integrantes Banda') ? 'bg-gray-300 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-200'}`} onClick={() => onSearchExtended('Integrantes Banda')}>EXTRAER BANDA</li>
               </ul>
             </div>
           </li>
