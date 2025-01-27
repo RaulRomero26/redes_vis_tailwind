@@ -66,7 +66,7 @@ const useContextMenu = () => {
                 if(opcion === 'Extraer Personas') handleSearchPersonasInspeccion(); //Busca Personas a partir de una inspeccion
                 /* --------- FUNCIONES QUE ME EXTRAEN DIRECTAMENTE SIN NECESIDAD DE MODAL ----------- */
                 if(opcion === 'Extraer Telefonos') handleExtraerTelefonos(node); // Buscar Telefonos si hay remision
-                if(opcion === 'Integrantes Banda') handleSearchBanda(node); // Buscar integrantes de una banda
+                if(opcion === 'Integrantes Banda') handleSearchBanda(); // Buscar integrantes de una banda
                 /* --------- ESTAS FUNCIONES ME DISPARAN UN MODAL ----------- */
                 if(opcion === 'Extraer Contactos') handleContactosModal(node); // Buscar Contactos si hay remision
                 if(opcion === 'Detenido Con') handleDetenidoConModal(node); // Buscar Detenido Con si hay remision
@@ -1207,7 +1207,7 @@ const useContextMenu = () => {
         for (const nodeId of selectedNodes) {
             const node = nodes.get(nodeId);
             if (node) {
-                const respuesta = await searchPersonasBanda({ entidad: node.type || '', payload: { Banda: node.atributos.aura.aura[0].Banda } });
+                const respuesta = await searchPersonasBanda({ entidad: node.type || '', payload: { Banda: node.editables?.aura_banda } });
                 console.log('RESPUESTA:',respuesta.data.personas);
                 if (respuesta.data.personas.length > 0) {
                     respuesta.data.personas.map((item: any) => {
