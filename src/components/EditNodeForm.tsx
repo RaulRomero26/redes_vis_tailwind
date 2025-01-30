@@ -44,6 +44,9 @@ const recreateLabel = (node: any) => {
         case 'entrada-telefono':
             newLabel = [
                 node.label && `${node.atributos.Telefono}`.trim(),
+                node.visibles && Object.keys(node.visibles).map(key => 
+                    node.visibles[key] && node.editables[key] ? `<b>${key}:</b> ${node.editables[key]}` : ''
+                ).filter(Boolean).join('\n')
             ].filter(Boolean).join('\n');
             break;
         case 'inspeccion':
