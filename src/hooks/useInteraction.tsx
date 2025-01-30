@@ -1,27 +1,35 @@
 import { useNetwork } from '../context/NetwokrContext';
+import { IdType } from 'vis-network';
 
 export const useInteraction = (nodeId: string) => {
+    console.log(nodeId);
 
     const { network, edges, nodes } = useNetwork();
   
     const onSeleccionarConexionesFinales = () => {
-        if (nodeId) {
-            // Obtener las aristas conectadas al nodo
-            const connectedEdges = network?.getConnectedEdges(nodeId) || [];
-            let connectedNodes: any[] = [];
-            // Obtener los nodos conectados al otro extremo de cada arista
-            if (connectedEdges.length > 0) {
+        const selectedNodes = network?.getSelectedNodes() || [];
+        let allConnectedEdges: any[] = [];
+        let allConnectedNodes: any[] = [];
 
-                connectedNodes = connectedEdges.map((edgeId: any) => {
-                    const edge: any = edges.get(edgeId); // Obtener los detalles de la arista
-                    return edge.from === nodeId ? edge.to : edge.from; // Nodo opuesto al nodo dado
-                });
-        
-            }
-            // Seleccionar las aristas y nodos en la red
-            network?.selectEdges(connectedEdges);
-            network?.selectNodes([nodeId, ...connectedNodes]);
-        }
+        selectedNodes.forEach((node: IdType) => {
+            const connectedEdges = network?.getConnectedEdges(node) || [];
+            allConnectedEdges = [...allConnectedEdges, ...connectedEdges];
+
+            const connectedNodes = connectedEdges.map((edgeId: any) => {
+                const edge: any = edges.get(edgeId);
+                return edge.from === node ? edge.to : edge.from;
+            });
+
+            allConnectedNodes = [...allConnectedNodes, ...connectedNodes];
+        });
+
+        // Eliminar duplicados
+        allConnectedEdges = Array.from(new Set(allConnectedEdges));
+        allConnectedNodes = Array.from(new Set(allConnectedNodes));
+
+        // Seleccionar las aristas y nodos en la red
+        network?.selectEdges(allConnectedEdges);
+        network?.selectNodes([...selectedNodes, ...allConnectedNodes]);
     };
 
     const onSeleccionarPersonas = () => { 
