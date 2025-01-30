@@ -13,6 +13,9 @@ const NetworkComponent: React.FC<NetworkComponentProps> = ({handleContextMenu}) 
   const { network, nodes, edges, setNetwork, setClickedNode, setClickedEdge, fisicas,clickedNode } = useNetwork();
   const { addNode, addEdgeControl } = useGraphFunctions();
   const networkContainer = useRef<HTMLDivElement | null>(null);
+  const [copiedNodes, setCopiedNodes] = useState<any[]>([]);
+  const [copiedEdges, setCopiedEdges] = useState<any[]>([]);
+
 
   const {  selectedSheet } = useSheets();
  
@@ -195,6 +198,42 @@ const NetworkComponent: React.FC<NetworkComponentProps> = ({handleContextMenu}) 
       };
     }
   }, [networkContainer, nodes, edges, setNetwork, setClickedNode, setClickedEdge]);
+
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'c') {
+        // Copiar nodos y aristas seleccionados
+        const selectedNodes = network?.getSelectedNodes() || [];
+        const selectedEdges = network?.getSelectedEdges() || [];
+        const nodesData = selectedNodes.map((nodeId) => nodes.get(nodeId));
+        const edgesData = selectedEdges.map((edgeId) => edges.get(edgeId));
+        setCopiedNodes(nodesData);
+        setCopiedEdges(edgesData);
+      } else if (event.ctrlKey && event.key === 'v') {
+        // Pegar nodos y aristas copiados
+        const newNodes = copiedNodes.map((node) => ({
+          ...node,
+          id: `${node.id}`,
+          label: `${node.label}`,
+        }));
+        const newEdges = copiedEdges.map((edge) => ({
+          ...edge,
+          id: `${edge.id}`,
+          from: `${edge.from}`,
+          to: `${edge.to}`,
+        }));
+        nodes.add(newNodes);
+        edges.add(newEdges);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [network, nodes, edges, copiedNodes, copiedEdges]);
+
 
   useEffect(() => {
     console.warn('NODOS:', nodes.get());
