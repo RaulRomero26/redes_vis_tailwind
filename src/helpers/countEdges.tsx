@@ -1,27 +1,60 @@
-export const countEdges = (edges: any) => {
+// export const countEdges = (edges: any) => {
 
+//     const edgeMap = new Map();
+
+//     edges.forEach((edge: any) => {
+//         const key1 = `${edge.from}-${edge.to}`;
+
+//         const existingEdge = edgeMap.get(key1);
+
+//         if (existingEdge) {
+//             existingEdge.suma += 1;
+//         } else {
+//             edgeMap.set(key1, { 
+//             ...edge, 
+//             suma: edge.atributos?.suma || 1, 
+//             label: edge.label || '' 
+//             });
+//         }
+//     });
+
+//     const result = Array.from(edgeMap.values()).map(edge => ({
+//         ...edge,
+//         label: `${edge.label} \n ${edge.suma}`,
+//         atributos: {
+//             suma: edge.suma
+//         }
+//     }));
+
+//     console.log(result);
+//     return result;
+// }
+
+export const countEdges = (edges: any[]) => {
     const edgeMap = new Map();
-
+  
     edges.forEach((edge: any) => {
-        const key1 = `${edge.from}-${edge.to}`;
-
-        if (edgeMap.has(key1)) {
-            const existingEdge = edgeMap.get(key1);
-            existingEdge.suma += 1;
-            existingEdge.label = existingEdge.label ? `${existingEdge.label}, ${edge.label}` : edge.label;
+      const key = `${edge.from}-${edge.to}`;
+  
+      const existingEdge = edgeMap.get(key);
+  
+      if (existingEdge) {
+        if (existingEdge.suma !== undefined) {
+          existingEdge.suma += edge.atributos?.suma || 1;
         } else {
-            edgeMap.set(key1, { ...edge, suma: 1, label: edge.label || '' });
+          existingEdge.suma = (edge.atributos?.suma || 1) + 1;
         }
+      } else {
+        edgeMap.set(key, {
+          ...edge,
+          suma: edge.atributos?.suma || 1,
+          label: edge.label || '',
+        });
+      }
     });
-
-    const result = Array.from(edgeMap.values()).map(edge => ({
-        ...edge,
-        label: `${edge.label} \n ${edge.suma}`,
-        atributos: {
-            suma: edge.suma
-        }
+  
+    return Array.from(edgeMap.values()).map(edge => ({
+      ...edge,
+      label: `${edge.label} ${edge.suma}`,
     }));
-
-    console.log(result);
-    return result;
-}
+  };
