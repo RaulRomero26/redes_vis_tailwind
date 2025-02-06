@@ -17,6 +17,11 @@ export const useSheets = () => {
         setSelectedSheet(newSheet.id);
         localStorage.setItem('hojaActiva', newSheet.id.toString());
         localStorage.setItem(`opciones_${newSheet.id}`, JSON.stringify({
+            layout:{
+                hierarchical: {
+                    enabled: false,
+                }
+            },
             edges: {
               smooth: {
                 enabled: true,

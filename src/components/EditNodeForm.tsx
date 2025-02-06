@@ -260,7 +260,7 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
                             </button>
                         </div>
                     ))}
-                    {Object.keys(nodeAtributos).filter(key => key !== 'detenciones' && key !== 'detenciones_historicas' && typeof nodeEditables[key] !== 'object').map(key => (
+                    { nodeDetails?.type !== 'telefono' && nodeDetails?.type !== 'entrada-telefono' && Object.keys(nodeAtributos).filter(key => key !== 'detenciones' && key !== 'detenciones_historicas' && typeof nodeEditables[key] !== 'object').map(key => (
                         <div key={key} className="mb-4 flex items-center">
                             <label className="font-bold">{key}</label>
                             {key === 'Comentarios' ? (

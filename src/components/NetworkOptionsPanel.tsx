@@ -5,6 +5,12 @@ export const NetworkOptionsPanel: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const { network } = useNetwork();
   const [hojaActiva, setHojaActiva] = useState(localStorage.getItem('hojaActiva') || '1');
+  
+  const [isHierarchical, setIsHierarchical] = useState(() => {
+    const storedOptions = JSON.parse(localStorage.getItem(`opciones_${hojaActiva}`) || '{}');
+    return storedOptions.layout?.hierarchical?.enabled || false;
+  });
+
   const [options, setOptions] = useState({
     edges: {
       smooth: {
@@ -47,7 +53,34 @@ export const NetworkOptionsPanel: React.FC = () => {
       return updated;
     });
   };
-
+  
+  const handleHierarchicalChange = (checked: boolean) => {
+    setIsHierarchical(checked);
+    if (checked) {
+      setOptions((prev) => ({
+        ...prev,
+        layout: {
+          hierarchical: {
+            enabled: true,
+            direction: 'UD',
+            sortMethod: 'hubsize',
+            nodeSpacing: 400,
+            levelSeparation: 250,
+            shakeTowards: 'roots',
+          },
+        },
+      }));
+    } else {
+      setOptions((prev) => ({
+        ...prev,
+        layout: {
+          hierarchical: {
+            enabled: false,
+          },
+        },
+      }));
+    }
+  };
   useEffect(() => {
     if (network) {
       network.setOptions(options);
@@ -77,6 +110,11 @@ export const NetworkOptionsPanel: React.FC = () => {
     }
   },[hojaActiva]);
 
+  useEffect(() => {
+    const storedOptions = JSON.parse(localStorage.getItem(`opciones_${hojaActiva}`) || '{}');
+    setIsHierarchical(storedOptions.layout?.hierarchical?.enabled || false);
+  }, [hojaActiva]);
+
   return (
     <div className="p-4 ">
       <button
@@ -92,6 +130,16 @@ export const NetworkOptionsPanel: React.FC = () => {
           <div className="mb-6">
             <h1 className="text-lg font-bold mb-4">sheet: {hojaActiva}</h1>
             <h2 className="text-lg font-bold mb-4">Edges</h2>
+
+            <div className="mb-4">
+              <input
+                type="checkbox"
+                checked={isHierarchical}
+                onChange={(e) => handleHierarchicalChange(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <label className="ml-2 text-sm">Enable Hierarchical Layout</label>
+            </div>
             <div className="flex items-center mb-4">
               <input
                 type="checkbox"

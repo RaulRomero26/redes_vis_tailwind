@@ -129,7 +129,7 @@ export const NetworkAnalisis: React.FC<NetworkAnalisisProps> = ({ onCloseModal }
                     <Bar data={chartData2} options={chartOptions2} />
                 </div>
             </div>
-            <div style={{ marginTop: '20px' }}>
+            <div style={{ display: 'flex', marginTop: '20px' }}>
             <table style={{ width: '100%' }}>
                 <thead>
                 <tr>
@@ -143,6 +143,34 @@ export const NetworkAnalisis: React.FC<NetworkAnalisisProps> = ({ onCloseModal }
                     <tr key={node.id}>
                     <td>{node.id}</td>
                     <td>{network?.getConnectedNodes(node.id)?.length || 0}</td>
+                    <td>
+                        <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => {
+                            network?.selectNodes([node.id]);
+                            network?.focus(node.id, { scale: 1 });
+                            onCloseModal();
+                        }}>
+                        Ver
+                        </button>
+                    </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+            <table style={{ width: '100%' }}>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Conexiones</th>
+                    <th>Accion</th>
+                </tr>
+                </thead>
+                <tbody>
+                {moreConectedNodes.map((node: any) => (
+                    <tr key={node.id}>
+                    <td>{node.id}</td>
+                    <td>{_nodeWeights.find(weight => weight.id === node.id)?.weight || 0}</td>
                     <td>
                         <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

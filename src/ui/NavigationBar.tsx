@@ -7,7 +7,7 @@ import { MdOutlineSave, MdOutlineUploadFile, MdFilterCenterFocus  } from "react-
 import nodo from "../assets/graph.png";
 import { useNetwork } from "../context/NetwokrContext";
 import { useSaveLoadNetwork } from "../hooks/useSaveLoadNetwork";
-import FisicasCheck from "../components/FisicasCheck";
+// import FisicasCheck from "../components/FisicasCheck";
 import { useCluster } from "../hooks/useCluster";
 import { useWeight } from "../hooks/useWeight";
 import { FaImage,FaFilePdf  } from "react-icons/fa";
@@ -29,7 +29,7 @@ export const NavigationBar:React.FC<NavigationBarProps> = ({ handleMenuClick, is
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { network, fisicas, setFisicas } = useNetwork();
+  const { network } = useNetwork();
   const { saveGraph, loadGraph, fileInputRef, exportNetworkToImage, exportNetworkToPDF } = useSaveLoadNetwork();
   const { onClusterNoPersonas, onClusterNoInspecciones, onClusterNoTelefonos, onClusterNoVehiculos, onOpenClusters} = useCluster();
   const { establishCenter } = useWeight();
@@ -377,9 +377,9 @@ export const NavigationBar:React.FC<NavigationBarProps> = ({ handleMenuClick, is
                 </ul>
               </div>
             </li>
-            <li>
+            {/* <li>
                 <FisicasCheck fisicas={fisicas} setFisicas={setFisicas}/>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>
