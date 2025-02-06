@@ -235,7 +235,7 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
                     {Object.keys(nodeEditables).filter(key => key !== 'label' && typeof nodeEditables[key] !== 'object').map(key => (
                         <div key={key} className="mb-4 flex items-center">
                             <label className="font-bold">{key}</label>
-                            {key === 'comentarios' ? (
+                            {key === 'Comentarios' ? (
                                 <textarea
                                     value={nodeEditables[key]}
                                     onChange={e => handleNodeChange(key, e.target.value)}
