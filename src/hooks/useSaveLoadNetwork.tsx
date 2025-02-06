@@ -67,9 +67,6 @@ export const useSaveLoadNetwork = () => {
                 edges.add(newEdges);
             };
             reader.readAsText(file);
-
-            localStorage.setItem(`nodes_sheet_${selectedSheet}`, JSON.stringify(nodes.get()));
-            localStorage.setItem(`edges_sheet_${selectedSheet}`, JSON.stringify(edges.get()));
         }
     };
 

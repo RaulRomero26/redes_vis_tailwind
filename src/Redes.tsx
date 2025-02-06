@@ -23,6 +23,7 @@ export const Redes = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isOpenAnalytics, setIsOpenAnalytics] = useState(false);
   const [isOpenWeight, setIsOpenWeight] = useState(false);
+  localStorage.setItem('hojaActiva', '1');
 
   const { contextMenu, handleContextMenu, closeContextMenu, handleSearchExtended,
     isModalFichasOpen, setIsModalFichasOpen, isModalContactosOpen, setIsModalContactosOpen,
