@@ -88,8 +88,7 @@ export const useSheets = () => {
                 const storedEdges = await getData(`edges_sheet_${selectedSheet}`);
                 const storedZoom = await getData(`zoom_level_${selectedSheet}`);
                 const storedViewPosition = await getData(`view_position_${selectedSheet}`); // Cargar la posición de vista
-                let viewPositionObject = JSON.parse(storedViewPosition);
-                console.log(viewPositionObject);
+    
                 if (storedNodes && storedEdges) {
                     nodes.clear();
                     edges.clear();
@@ -100,12 +99,14 @@ export const useSheets = () => {
                     edges.clear();
                 }
                 if (storedZoom) {
-                    network.moveTo({ scale: storedZoom});
+                    network.moveTo({ scale: Number(storedZoom) });
                 }
                 if (storedViewPosition) {
-                    network.moveTo({ position: viewPositionObject}); // Mover a la posición de vista almacenada
+                    const viewPositionObject = JSON.parse(storedViewPosition || '{}');
+                    network.moveTo({ position: viewPositionObject }); // Mover a la posición de vista almacenada
                 }
             };
+    
             loadNetwork();
         }
     }, [selectedSheet, network, nodes, edges]);

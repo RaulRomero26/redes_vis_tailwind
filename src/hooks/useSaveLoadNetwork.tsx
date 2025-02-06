@@ -1,13 +1,11 @@
 import { useRef } from 'react';
 import { useNetwork } from '../context/NetwokrContext';
 import { countEdges } from '../helpers/countEdges';
-import { useSheets } from './useSheets';
 import pdfMake from 'pdfmake/build/pdfmake';
 
 export const useSaveLoadNetwork = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { nodes, edges, network } = useNetwork();
-    const { selectedSheet } = useSheets();
 
     // Función para guardar el grafo en un archivo JSON
     const saveGraph = () => {

@@ -71,7 +71,10 @@ export const NetworkOptionsPanel: React.FC = () => {
   }, [options]);
 
   useEffect(() => {
-    localStorage.getItem(`opciones_${hojaActiva}`) && setOptions(JSON.parse(localStorage.getItem(`opciones_${hojaActiva}`)));
+    const storedOptions = localStorage.getItem(`opciones_${hojaActiva}`);
+    if (storedOptions) {
+      setOptions(JSON.parse(storedOptions));
+    }
   },[hojaActiva]);
 
   return (
