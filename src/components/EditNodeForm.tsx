@@ -235,13 +235,22 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
                     {Object.keys(nodeEditables).filter(key => key !== 'label' && typeof nodeEditables[key] !== 'object').map(key => (
                         <div key={key} className="mb-4 flex items-center">
                             <label className="font-bold">{key}</label>
-                            <input
-                                type="text"
-                                value={nodeEditables[key]}
-                                onChange={e => handleNodeChange(key, e.target.value)}
-                                className="ml-2 p-1 border border-gray-300 flex-grow"
-                                tabIndex={0} // Añadir tabIndex
-                            />
+                            {key === 'comentarios' ? (
+                                <textarea
+                                    value={nodeEditables[key]}
+                                    onChange={e => handleNodeChange(key, e.target.value)}
+                                    className="ml-2 p-1 border border-gray-300 flex-grow"
+                                    tabIndex={0} // Añadir tabIndex
+                                />
+                            ) : (
+                                <input
+                                    type="text"
+                                    value={nodeEditables[key]}
+                                    onChange={e => handleNodeChange(key, e.target.value)}
+                                    className="ml-2 p-1 border border-gray-300 flex-grow"
+                                    tabIndex={0} // Añadir tabIndex
+                                />
+                            )}
                             <button
                                 onClick={() => handleNodeVisibilidad(key, !nodeVisibles[key])}
                                 className="ml-2 p-2 bg-gray-300 text-black rounded"
