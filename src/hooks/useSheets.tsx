@@ -59,6 +59,16 @@ export const useSheets = () => {
         await deleteData(`view_position_${id}`); // Eliminar la posición de vista almacenada
     };
 
+    const clearSheet = async (id: number) => {
+        await deleteData(`nodes_sheet_${id}`);
+        await deleteData(`edges_sheet_${id}`);
+        await deleteData(`zoom_level_${id}`); // Eliminar el nivel de zoom almacenado
+        await deleteData(`view_position_${id}`); // Eliminar la posición de vista almacenada
+        nodes.clear();
+        edges.clear();
+
+    };
+
     const selectSheet = (id: number) => {
         setPrevSheet(selectedSheet);
         setSelectedSheet(id);
@@ -116,6 +126,7 @@ export const useSheets = () => {
         selectedSheet,
         addSheet,
         deleteSheet,
-        selectSheet
+        selectSheet,
+        clearSheet
     };
 };

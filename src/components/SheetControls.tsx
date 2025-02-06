@@ -1,12 +1,18 @@
 import { useSheets } from "../hooks/useSheets";
 
 export const SheetControls = () => {
-    const { sheets, selectedSheet, addSheet, deleteSheet, selectSheet } = useSheets();
+    const { sheets, selectedSheet, addSheet, deleteSheet, selectSheet, clearSheet } = useSheets();
 
     return (
-        <div style={{ position: 'absolute', top: `7vh`, right: `1vw`, zIndex: 1000 }}>
+        <div style={{ position: 'absolute', top: `7vh`, right: `1vw`, zIndex: 3 }}>
             <div className="flex justify-between items-center p-4">
                 <div className="flex space-x-2">
+                    <button
+                        onClick={() => clearSheet(selectedSheet)}
+                        className="px-4 py-2 bg-red-500 text-white"
+                    >
+                        Limpiar Hoja
+                    </button>
                     {sheets.map((sheet: any) => (
                         <button
                             key={sheet.id}
