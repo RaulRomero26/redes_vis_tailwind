@@ -263,13 +263,22 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
                     {Object.keys(nodeAtributos).filter(key => key !== 'detenciones' && key !== 'detenciones_historicas' && typeof nodeEditables[key] !== 'object').map(key => (
                         <div key={key} className="mb-4 flex items-center">
                             <label className="font-bold">{key}</label>
-                            <input
-                                type="text"
-                                value={nodeAtributos[key]}
-                                onChange={e => handleNodeChangeAtt(key, e.target.value)}
-                                className="ml-2 p-1 border border-gray-300 flex-grow"
-                                tabIndex={0} // Añadir tabIndex
-                            />
+                            {key === 'Comentarios' ? (
+                                <textarea
+                                    value={nodeAtributos[key]}
+                                    onChange={e => handleNodeChangeAtt(key, e.target.value)}
+                                    className="ml-2 p-1 border border-gray-300 flex-grow"
+                                    tabIndex={0} // Añadir tabIndex
+                                />
+                            ) : (
+                                <input
+                                    type="text"
+                                    value={nodeAtributos[key]}
+                                    onChange={e => handleNodeChangeAtt(key, e.target.value)}
+                                    className="ml-2 p-1 border border-gray-300 flex-grow"
+                                    tabIndex={0} // Añadir tabIndex
+                                />
+                            )}
                         </div>
                     ))}
                     {showAddNodeAttribute ? (
