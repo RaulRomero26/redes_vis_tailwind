@@ -75,14 +75,19 @@ export const NetworkAnalisis: React.FC<NetworkAnalisisProps> = ({ onCloseModal }
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
-            },
-            // {
-            //     label: 'Peso',
-            //     data: _nodeWeights.map((node) => node.weight),
-            //     backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            //     borderColor: 'rgba(153, 102, 255, 1)',
-            //     borderWidth: 1,
-            // }
+            }
+        ],
+    };
+    const chartData2 = {
+        labels: moreConectedNodes.map((node: any) => node.id),
+        datasets: [
+            {
+                 label: 'Peso',
+                 data: _nodeWeights.map((node) => node.weight),
+                 backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                 borderColor: 'rgba(153, 102, 255, 1)',
+                 borderWidth: 1,
+             }
         ],
     };
 
@@ -100,10 +105,29 @@ export const NetworkAnalisis: React.FC<NetworkAnalisisProps> = ({ onCloseModal }
         },
     };
 
+    const chartOptions2 = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top' as const,
+            },
+            title: {
+                display: true,
+                text: 'Pesos de aristas',
+            },
+        },
+    };
+
     return (
         <>
-            <div style={{ width: '100%', height: '500px' }}>
-            <Bar data={chartData} options={chartOptions} />
+            <div style={{ display: 'flex' }}>
+                <div style={{ width: '100%', height: '500px' }}>
+                    <Bar data={chartData} options={chartOptions} />
+                </div>
+                <div style={{ width: '100%', height: '500px' }}>
+                    <Bar data={chartData2} options={chartOptions2} />
+                </div>
             </div>
             <div style={{ marginTop: '20px' }}>
             <table style={{ width: '100%' }}>
