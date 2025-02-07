@@ -482,7 +482,7 @@ const useContextMenu = () => {
         let respuesta:any;
         if (node.type === 'entrada-persona' || node.type === 'persona' || node.type === 'contacto') {
             respuesta = await searchAura({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
-            console.log('RESPUESTA:',respuesta.data.aura);
+            console.log('RESPUESTA:',respuesta);
             if (respuesta.data.aura && respuesta.data.aura.length > 0) {
                 nodes.map(n => {
                     if (n.id === node.id) {
@@ -1208,9 +1208,9 @@ const useContextMenu = () => {
             const node = nodes.get(nodeId);
             if (node) {
                 const respuesta = await searchPersonasBanda({ entidad: node.type || '', payload: { Banda: node.editables?.aura_banda } });
-                console.log('RESPUESTA:',respuesta.data.personas);
-                if (respuesta.data.personas.length > 0) {
-                    respuesta.data.personas.map((item: any) => {
+                console.log('RESPUESTA:',respuesta.data.aura);
+                if (respuesta.data.aura.length > 0) {
+                    respuesta.data.aura.map((item: any) => {
                         //console.log('item:',item);
                         if (item.Nombre === '') return;
                         const newNode = createNodeData(

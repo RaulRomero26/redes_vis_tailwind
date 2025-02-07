@@ -122,14 +122,14 @@ export const NetworkOptionsPanel: React.FC = () => {
         onClick={toggleVisibility}
         style={{ position: 'fixed', bottom: '70px', right: '10px', zIndex: 9999 }}
       >
-        {isVisible ? "Ocultar Options" : "Mostrar Options"}
+        {isVisible ? "Ocultar Panel" : "Diseñar Red"}
       </button>
       {isVisible && (
         <div className="mt-4 bg-white shadow-md rounded-lg p-6 max-w-xs" style={{ position: 'fixed', bottom: '120px', right: '10px', zIndex: 9998, maxHeight: '600px', overflowY: 'scroll' }}>
           {/* Edges Section */}
           <div className="mb-6">
-            <h1 className="text-lg font-bold mb-4">sheet: {hojaActiva}</h1>
-            <h2 className="text-lg font-bold mb-4">Edges</h2>
+            <h1 className="text-lg font-bold mb-4">Hoja: {hojaActiva}</h1>
+            <h2 className="text-lg font-bold mb-4">Aristas:</h2>
 
             <div className="mb-4">
               <input
@@ -138,7 +138,7 @@ export const NetworkOptionsPanel: React.FC = () => {
                 onChange={(e) => handleHierarchicalChange(e.target.checked)}
                 className="w-4 h-4"
               />
-              <label className="ml-2 text-sm">Enable Hierarchical Layout</label>
+              <label className="ml-2 text-sm">Jerarquia Automática: </label>
             </div>
             <div className="flex items-center mb-4">
               <input
@@ -149,10 +149,10 @@ export const NetworkOptionsPanel: React.FC = () => {
                 }
                 className="w-4 h-4"
               />
-              <label className="ml-2 text-sm">Smooth Enabled</label>
+              <label className="ml-2 text-sm">Suavizado</label>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Type</label>
+              <label className="block text-sm font-medium">Tipo</label>
               <select
                 value={options.edges.smooth.type}
                 onChange={(e) => handleChange("edges.smooth.type", e.target.value)}
@@ -163,7 +163,7 @@ export const NetworkOptionsPanel: React.FC = () => {
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Force Direction</label>
+              <label className="block text-sm font-medium">Fuerza en Dirección</label>
               <select
                 value={options.edges.smooth.forceDirection}
                 onChange={(e) =>
@@ -177,7 +177,7 @@ export const NetworkOptionsPanel: React.FC = () => {
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Roundness</label>
+              <label className="block text-sm font-medium">Curvatura</label>
               <input
                 type="range"
                 min={0}
@@ -194,7 +194,7 @@ export const NetworkOptionsPanel: React.FC = () => {
 
           {/* Physics Section */}
           <div>
-            <h2 className="text-lg font-bold mb-4">Physics</h2>
+            <h2 className="text-lg font-bold mb-4">Físicas</h2>
             <div className="flex items-center mb-4">
               <input
                 type="checkbox"
@@ -204,10 +204,10 @@ export const NetworkOptionsPanel: React.FC = () => {
                 }
                 className="w-4 h-4"
               />
-              <label className="ml-2 text-sm">Physics Enabled</label>
+              <label className="ml-2 text-sm">Físicas Habilitadas</label>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Central Gravity</label>
+              <label className="block text-sm font-medium">Gravedad Central</label>
               <input
                 type="range"
                 min={0}
@@ -224,7 +224,7 @@ export const NetworkOptionsPanel: React.FC = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Spring Length</label>
+              <label className="block text-sm font-medium">Distancia de Arista</label>
               <input
                 type="range"
                 min={0}
@@ -241,7 +241,7 @@ export const NetworkOptionsPanel: React.FC = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Spring Constant</label>
+              <label className="block text-sm font-medium">Arista Constante</label>
               <input
                 type="range"
                 min={0}
@@ -258,7 +258,7 @@ export const NetworkOptionsPanel: React.FC = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Node Distance</label>
+              <label className="block text-sm font-medium">Distancia entre Nodos</label>
               <input
                 type="range"
                 min={0}
@@ -275,7 +275,7 @@ export const NetworkOptionsPanel: React.FC = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Damping</label>
+              <label className="block text-sm font-medium">Rebote</label>
               <input
                 type="range"
                 min={0}
@@ -306,7 +306,7 @@ export const NetworkOptionsPanel: React.FC = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Solver</label>
+              <label className="block text-sm font-medium">Modelo de Físicas</label>
               <select
                 value={options.physics.solver}
                 onChange={(e) => handleChange("physics.solver", e.target.value)}

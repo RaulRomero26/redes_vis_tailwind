@@ -389,7 +389,7 @@ const searchAura = async ({ entidad, payload }: { entidad: string; payload: Payl
 
   try {
     const response = await toast.promise(
-      fetch('http://localhost:8087/api/search/redes-aura', {
+      fetch('http://172.18.110.90:8087/api/search/redes-aura', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -433,7 +433,7 @@ const searchPersonasBanda = async ({ entidad, payload }: { entidad: string; payl
     );
 
     const data = await response.json();
-    setData(data.data.personas);
+    setData(data.data.aura);
 
     return data;
   } catch (error) {
