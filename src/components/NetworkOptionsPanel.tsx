@@ -53,7 +53,7 @@ export const NetworkOptionsPanel: React.FC = () => {
       return updated;
     });
   };
-  
+
   const handleHierarchicalChange = (checked: boolean) => {
     setIsHierarchical(checked);
     if (checked) {
@@ -71,6 +71,7 @@ export const NetworkOptionsPanel: React.FC = () => {
         },
       }));
     } else {
+      const positions = network?.getPositions();
       setOptions((prev) => ({
         ...prev,
         layout: {
@@ -78,9 +79,28 @@ export const NetworkOptionsPanel: React.FC = () => {
             enabled: false,
           },
         },
+        physics: {
+          enabled: true,
+          repulsion: {
+            centralGravity: 0.1,
+            springLength: 200,
+            springConstant: 0.05,
+            nodeDistance: 410,
+            damping: 0.09,
+          },
+          maxVelocity: 50,
+          minVelocity: 0.75,
+          solver: "repulsion",
+          timestep: 0.5,
+        },
       }));
+      if (positions) {
+        network?.setData({ nodes: network.body.data.nodes, edges: network.body.data.edges });
+        network?.storePositions();
+      }
     }
   };
+
   useEffect(() => {
     if (network) {
       network.setOptions(options);
@@ -99,21 +119,31 @@ export const NetworkOptionsPanel: React.FC = () => {
     return () => clearInterval(interval);
   }, [hojaActiva]);
 
-  useEffect(( ) => {
+  useEffect(() => {
     localStorage.setItem(`opciones_${hojaActiva}`, JSON.stringify(options));
-  }, [options]);
+  }, [options, hojaActiva]);
 
   useEffect(() => {
     const storedOptions = localStorage.getItem(`opciones_${hojaActiva}`);
     if (storedOptions) {
       setOptions(JSON.parse(storedOptions));
     }
-  },[hojaActiva]);
+  }, [hojaActiva]);
 
   useEffect(() => {
     const storedOptions = JSON.parse(localStorage.getItem(`opciones_${hojaActiva}`) || '{}');
     setIsHierarchical(storedOptions.layout?.hierarchical?.enabled || false);
   }, [hojaActiva]);
+
+  useEffect(() => {
+    if (!isHierarchical) {
+      const positions = network?.getPositions();
+      if (positions) {
+        network?.setData({ nodes: network.body.data.nodes, edges: network.body.data.edges });
+        network?.storePositions();
+      }
+    }
+  }, [isHierarchical, network]);
 
   return (
     <div className="p-4 ">
