@@ -3,7 +3,7 @@ import { useNetwork } from '../context/NetwokrContext';
 
 export const NetworkOptionsPanel: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const { network } = useNetwork();
+  const { network, nodes } = useNetwork();
   const [hojaActiva, setHojaActiva] = useState(localStorage.getItem('hojaActiva') || '1');
   
   const [isHierarchical, setIsHierarchical] = useState(() => {
@@ -56,33 +56,30 @@ export const NetworkOptionsPanel: React.FC = () => {
 
   const handleHierarchicalChange = (checked: boolean) => {
     setIsHierarchical(checked);
+  
     if (checked) {
+      // Guardar posiciones cuando la red haya estabilizado su layout jerárquico
+      network?.once("stabilized", () => {
+        localStorage.setItem("storedPositionsH", JSON.stringify(network?.getPositions()));
+      });
+      
+      // Activar layout jerárquico
       setOptions((prev) => ({
         ...prev,
         layout: {
           hierarchical: {
             enabled: true,
-            direction: 'UD',
-            sortMethod: 'hubsize',
+            direction: "UD",
+            sortMethod: "hubsize",
             nodeSpacing: 400,
             levelSeparation: 250,
-            shakeTowards: 'roots',
-          },
-        },
-      }));
-    } else {
-      const positions = network?.getPositions();
-      setOptions((prev) => ({
-        ...prev,
-        layout: {
-          hierarchical: {
-            enabled: false,
+            shakeTowards: "roots",
           },
         },
         physics: {
-          enabled: true,
+          enabled: false, // Asegura que la física esté desactivada
           repulsion: {
-            centralGravity: 0.1,
+            centralGravity: 0, // Evita error al estar siempre definido
             springLength: 200,
             springConstant: 0.05,
             nodeDistance: 410,
@@ -94,12 +91,51 @@ export const NetworkOptionsPanel: React.FC = () => {
           timestep: 0.5,
         },
       }));
-      if (positions) {
-        network?.setData({ nodes: network.body.data.nodes, edges: network.body.data.edges });
-        network?.storePositions();
+    } else {
+      // Desactivar layout jerárquico y mantener las posiciones
+      setOptions((prev) => ({
+        ...prev,
+        layout: {
+          hierarchical: {
+            enabled: false,
+          },
+        },
+        physics: {
+          enabled: true, // Asegura que la física esté desactivada
+          repulsion: {
+            centralGravity: 0, // Evita error al estar siempre definido
+            springLength: 200,
+            springConstant: 0.05,
+            nodeDistance: 410,
+            damping: 0.09,
+          },
+          maxVelocity: 50,
+          minVelocity: 0.75,
+          solver: "repulsion",
+          timestep: 0.5,
+        },
+      }));
+      
+      // Recuperar y aplicar posiciones almacenadas
+      const storedPositions: { [key: string]: { x: number, y: number } } = JSON.parse(localStorage.getItem("storedPositionsH") || "{}");
+      if (Object.keys(storedPositions).length > 0) {
+        const updatedNodes = Object.keys(storedPositions).map((nodeId) => ({
+          id: nodeId,
+          x: storedPositions[nodeId].x,
+          y: storedPositions[nodeId].y,
+          fixed: { x: false, y: false } // Fijar posiciones para evitar movimientos
+        }));
+        nodes.update(updatedNodes);
+  
+        // Asegurarse de que la red actualice la vista con las nuevas posiciones
+        network?.setData({
+          nodes: (network as any)?.body?.data?.nodes,
+          edges: (network as any)?.body?.data?.edges,
+        });
       }
     }
   };
+  
 
   useEffect(() => {
     if (network) {
@@ -134,16 +170,6 @@ export const NetworkOptionsPanel: React.FC = () => {
     const storedOptions = JSON.parse(localStorage.getItem(`opciones_${hojaActiva}`) || '{}');
     setIsHierarchical(storedOptions.layout?.hierarchical?.enabled || false);
   }, [hojaActiva]);
-
-  useEffect(() => {
-    if (!isHierarchical) {
-      const positions = network?.getPositions();
-      if (positions) {
-        network?.setData({ nodes: network.body.data.nodes, edges: network.body.data.edges });
-        network?.storePositions();
-      }
-    }
-  }, [isHierarchical, network]);
 
   return (
     <div className="p-4 ">

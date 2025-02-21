@@ -1021,42 +1021,41 @@ const useContextMenu = () => {
             let invalidPhones = ["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"];
             if (/^0+$/.test(node.atributos.Telefono)) return;
             if(invalidPhones.find(valor => valor === node.atributos.Telefono) ) return;
-            const newNode = createNodeData(
-                `${node.atributos.Telefono}`, 
-                node.atributos.Telefono, 
-                node.atributos.Telefono, 
-                "image", 
-                15, 
-                {
-                    background:"rgba(255, 255, 255, 0.8)",
-                    border: "rgba(255, 255, 255, 0)",
-                    highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
-                    hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
-                  }, 
-                "telefono", 
-                'telefono',
-                node.atributos,
-                {
-                    "Telefono":node.atributos.Telefono
-                },
-                0,
-                0
-            );
-            //console.warn('NEW NODE TO EDGE:',newNode);
-            addNode({newNode: newNode, parentPosition: network?.getPosition(node.id)}, (data: any) => {
-                //console.log('Node added:', data.status);
-                if (data.status == false) {
-                    console.error('Error adding node');
-                }
-                else{
-                    
-                    if(newNode && data.status==true ){
-                        addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
+            const phoneNumbers = node.atributos.Telefono.split(',');
+            for (const phoneNumber of phoneNumbers) {
+                const newNode = createNodeData(
+                    `${phoneNumber}`, 
+                    phoneNumber, 
+                    phoneNumber, 
+                    "image", 
+                    15, 
+                    {
+                        background:"rgba(255, 255, 255, 0.8)",
+                        border: "rgba(255, 255, 255, 0)",
+                        highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
+                        hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
+                    }, 
+                    "telefono", 
+                    'telefono',
+                    node.atributos,
+                    {
+                        "Telefono": phoneNumber
+                    },
+                    0,
+                    0
+                );
+                addNode({ newNode: newNode, parentPosition: network?.getPosition(node.id) }, (data: any) => {
+                    if (data.status == false) {
+                        console.error('Error adding node');
+                    } else {
+                        if (newNode && data.status == true) {
+                            addEdge({ from: node.id, to: newNode.id, label: 'Telefono de Contacto' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
         }else {
 
             const respuesta = node.data.remisiones;
@@ -1065,41 +1064,43 @@ const useContextMenu = () => {
                 let invalidPhones = ["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"];
                 if (/^0+$/.test(node.atributos.Telefono)) return;
                 if(invalidPhones.find(valor => valor === item.Telefono) ) return;
-                const newNode = createNodeData(
-                    `${item.Telefono}`, 
-                    item.Telefono, 
-                    item.Telefono, 
-                    "image", 
-                    15, 
-                    {
-                        background:"rgba(255, 255, 255, 0.8)",
-                        border: "rgba(255, 255, 255, 0)",
-                        highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
-                        hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
-                      }, 
-                    "telefono", 
-                    'telefono',
-                    item,
-                    {
-                        "Telefono":item.Telefono
-                    },
-                    0,
-                    0
-                );
-                //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode({newNode: newNode, parentPosition: network?.getPosition(node.id)}, (data: any) => {
-                    //console.log('Node added:', data.status);
-                    if (data.status == false) {
-                        console.error('Error adding node');
-                    }
-                    else{
-                        if(newNode && data.status==true){
-                            addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
+                const phoneNumbers = item.Telefono.split(',');
+                for (const phoneNumber of phoneNumbers) {
+                    const newNode = createNodeData(
+                        `${phoneNumber}`, 
+                        phoneNumber, 
+                        phoneNumber, 
+                        "image", 
+                        15, 
+                        {
+                            background:"rgba(255, 255, 255, 0.8)",
+                            border: "rgba(255, 255, 255, 0)",
+                            highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
+                            hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
+                        }, 
+                        "telefono", 
+                        'telefono',
+                        item,
+                        {
+                            "Telefono": phoneNumber
+                        },
+                        0,
+                        0
+                    );
+                    //console.warn('NEW NODE TO EDGE:',newNode);
+                    addNode({ newNode: newNode, parentPosition: network?.getPosition(node.id) }, (data: any) => {
+                        //console.log('Node added:', data.status);
+                        if (data.status == false) {
+                            console.error('Error adding node');
+                        } else {
+                            if (newNode && data.status == true) {
+                                addEdge({ from: node.id, to: newNode.id, label: 'Telefono de Contacto' }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             });
         }
 
