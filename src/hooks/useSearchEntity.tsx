@@ -442,6 +442,32 @@ const searchPersonasBanda = async ({ entidad, payload }: { entidad: string; payl
   }
 };
 
+const searchUbicacionesRemision = async (remision: any) => {
+  console.log('Buscando Ubicaciones', remision);
+
+  try {
+    const response = await fetch('http://172.18.110.90:8087/api/search/ubicaciones-remision', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ remision }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al buscar las ubicaciones.');
+    }
+
+    const data = await response.json();
+    setData(data.data.ubicaciones);
+
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+
   return {
     searchData,
     searchPhone,
@@ -458,6 +484,7 @@ const searchPersonasBanda = async ({ entidad, payload }: { entidad: string; payl
     searchInspeccionVehiculo,
     searchAura,
     searchPersonasBanda,
+    searchUbicacionesRemision,
     data,
   };
 };

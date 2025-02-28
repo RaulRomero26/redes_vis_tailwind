@@ -16,6 +16,7 @@ import { ModalWeight } from "./components/Modals/ModalWeight";
 import { Symbols } from "./components/Symbols";
 import { SheetControls } from "./components/SheetControls";
 import { NetworkOptionsPanel } from "./components/NetworkOptionsPanel";
+import { Map } from "./components/Map";
 
 export const Redes = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,6 +58,7 @@ export const Redes = () => {
         <SearchNode />
         <SheetControls />
         <Symbols />
+        <Map />
         <NetworkOptionsPanel />
         <NetworkComponent handleContextMenu={handleContextMenu} />
         {(contextMenu.edgeId || contextMenu.nodeId) && (
