@@ -31,7 +31,7 @@ export const NavigationBar:React.FC<NavigationBarProps> = ({ handleMenuClick, is
 
   const { network } = useNetwork();
   const { saveGraph, loadGraph, fileInputRef, exportNetworkToImage, exportNetworkToPDF } = useSaveLoadNetwork();
-  const { onClusterNoPersonas, onClusterNoInspecciones, onClusterNoTelefonos, onClusterNoVehiculos, onOpenClusters} = useCluster();
+  const { onClusterNoPersonas, onClusterNoInspecciones, onClusterNoTelefonos, onClusterNoVehiculos, onOpenClusters, onClusterBySelection} = useCluster();
   const { establishCenter } = useWeight();
 
   const toggleDropdown = (event: React.MouseEvent) => {
@@ -367,6 +367,11 @@ export const NavigationBar:React.FC<NavigationBarProps> = ({ handleMenuClick, is
                   <li>
                     <a href="#" className="block px-4 py-2 hover:bg-gray-300" onClick={handleOpenWeight}>
                       Cluster Por Peso
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="block px-4 py-2 hover:bg-gray-300" onClick={onClusterBySelection}>
+                      Cluster Por Seleccion
                     </a>
                   </li>
                   <li>

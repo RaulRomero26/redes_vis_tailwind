@@ -123,6 +123,26 @@ const clusterByEqual = (value: number) => {
     }
 };
 
+const onClusterBySelection = () => {
+    if (network) {
+        const selectedNodes = network.getSelectedNodes();
+        if (selectedNodes.length > 0) {
+            const clusterOptionsByData = {
+                joinCondition: (nodeOptions: any) => {
+                    return selectedNodes.includes(nodeOptions.id);
+                },
+                clusterNodeProperties: {
+                    id: 'cluster:selected-nodes',
+                    borderWidth: 3,
+                    shape: 'database',
+                    label: 'Seleccionados',
+                },
+            };
+            network.cluster(clusterOptionsByData);
+        }
+    }
+};
+
 const onOpenClusters = () => {
     if (clickedNode && network?.isCluster(clickedNode)) {
     const openClusterObj = {
@@ -144,6 +164,7 @@ const onOpenClusters = () => {
     onOpenClusters,
     clusterByMaxOrEqual,
     clusterByMinOrEqual,
-    clusterByEqual
+    clusterByEqual,
+    onClusterBySelection
   };
 };
