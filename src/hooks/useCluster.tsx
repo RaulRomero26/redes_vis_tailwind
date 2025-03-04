@@ -132,7 +132,7 @@ const onClusterBySelection = () => {
                     return selectedNodes.includes(nodeOptions.id);
                 },
                 clusterNodeProperties: {
-                    id: 'cluster:selected-nodes',
+                    id: `cluster:selected-nodes${Date.now()}`,
                     borderWidth: 3,
                     shape: 'database',
                     label: 'Seleccionados',

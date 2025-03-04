@@ -10,7 +10,7 @@ export const useNodeLocations = (mapInstanceRef: any, filters: any) => {
     const [isFetching, setIsFetching] = useState(false); // Estado para controlar las peticiones
     const { network, nodes } = useNetwork();
     const { searchUbicacionesRemision } = useSearchEntity();
-
+    console.log('Filtros:', filters);
     const debounce = (func: Function, wait: number) => {
         let timeout: NodeJS.Timeout;
         return (...args: any[]) => {
