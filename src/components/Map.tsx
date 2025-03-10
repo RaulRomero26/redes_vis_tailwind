@@ -10,7 +10,7 @@ mapboxgl.accessToken = "pk.eyJ1Ijoic3NjZGlwYyIsImEiOiJjbHllcmM0dG8wNW9oMmtvaHhub
 
 export const Map = () => {
     const [visible, setVisible] = useState(false);
-    const [currentSelectedNodes, _setCurrentSelectedNodes] = useState<any[]>([]);
+    const [_currentSelectedNodes, _setCurrentSelectedNodes] = useState<any[]>([]);
     const mapContainerRef = useRef<HTMLDivElement | null>(null); // Contenedor del mapa
     const mapInstanceRef = useRef<mapboxgl.Map | null>(null); // Instancia del mapa
     const [filters, setFilters] = useState({
@@ -52,8 +52,18 @@ export const Map = () => {
     }, [visible]);
 
     useEffect(() => {
-
-    }, [currentSelectedNodes]);
+        if (mapInstanceRef.current) {
+            const markers = document.getElementsByClassName('mapboxgl-marker');
+            Array.from(markers).forEach(marker => {
+                const nodeType = marker.getAttribute('data-tipo');
+                if (nodeType && filters[nodeType as keyof typeof filters]) {
+                    (marker as HTMLElement).style.display = 'block';
+                } else {
+                    (marker as HTMLElement).style.display = 'none';
+                }
+            });
+        }
+    }, [filters]);
 
     return (
         <>

@@ -67,6 +67,7 @@ export const useNodeLocations = (mapInstanceRef: any, filters: any) => {
                 `);
                 break;
             case 'persona':
+            case 'entrada-persona':
                 const imageURL = `http://172.18.110.25/sarai/public/files/Remisiones/${ficha}/FotosHuellas/${remision}/rostro_frente.jpeg`;
                 // Crear un marcador con una imagen personalizada
                 markerElement = document.createElement("div");
@@ -124,6 +125,7 @@ export const useNodeLocations = (mapInstanceRef: any, filters: any) => {
                     }
                     break;
                 case "persona":
+                case "entrada-persona":
                     const { remisiones } = node.data;
                     if (remisiones !== undefined && remisiones.length > 0) {
                         const localizaciones = await Promise.all(
