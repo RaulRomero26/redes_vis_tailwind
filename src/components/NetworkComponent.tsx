@@ -223,8 +223,23 @@ const NetworkComponent: React.FC<NetworkComponentProps> = ({handleContextMenu}) 
           from: `${edge.from}`,
           to: `${edge.to}`,
         }));
-        nodes.add(newNodes);
-        edges.add(newEdges);
+
+        newNodes.forEach((node) => {
+          try {
+            nodes.add(node);
+          } catch (error) {
+            console.warn(`Node with id ${node.id} already exists. Skipping...`);
+          }
+        });
+        newEdges.forEach((edge) => {
+          try {
+            edges.add(edge);
+          } catch (error) {
+            console.warn(`Edge with id ${edge.id} already exists. Skipping...`);
+          }
+        });
+        // nodes.add(newNodes);
+        // edges.add(newEdges);
       }
     };
 

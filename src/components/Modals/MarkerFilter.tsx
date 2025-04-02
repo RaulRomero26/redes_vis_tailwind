@@ -1,3 +1,5 @@
+import { SlSizeFullscreen } from "react-icons/sl";
+
 interface MarkerFilterProps {
     filters: {
         Hechos: boolean;
@@ -11,9 +13,10 @@ interface MarkerFilterProps {
         Domicilio: boolean;
         inspeccion: boolean;
     }>>;
+    handleExpand: () => void;
 }
 
-export const MarkerFilter: React.FC<MarkerFilterProps> = ({ filters, setFilters }) => {  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+export const MarkerFilter: React.FC<MarkerFilterProps> = ({ filters, setFilters, handleExpand }) => {  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
         setFilters({
             ...filters,
@@ -60,6 +63,7 @@ export const MarkerFilter: React.FC<MarkerFilterProps> = ({ filters, setFilters 
                 />
                 Inspecciones
             </label>
+            <SlSizeFullscreen className="float-end" onClick={handleExpand}/>
         </div>
     );
 };

@@ -3,6 +3,7 @@ import { useNetwork } from "../context/NetwokrContext";
 import mapboxgl from "mapbox-gl";
 import { useSearchEntity } from './useSearchEntity';
 import inspeccion from '../assets/inspeccion.png';
+import persona from '../assets/persona.png';
 
 export const useNodeLocations = (mapInstanceRef: any, filters: any) => {
     const [_selectedNodes, setSelectedNodes] = useState<any[]>([]);
@@ -69,9 +70,21 @@ export const useNodeLocations = (mapInstanceRef: any, filters: any) => {
             case 'persona':
             case 'entrada-persona':
                 const imageURL = `http://172.18.110.25/sarai/public/files/Remisiones/${ficha}/FotosHuellas/${remision}/rostro_frente.jpeg`;
+                const checkImageExists = (url: string) => {
+                    return new Promise((resolve) => {
+                        const img = new Image();
+                        img.onload = () => resolve(true);
+                        img.onerror = () => resolve(false);
+                        img.src = url;
+                    });
+                };
+
+                const imageExists = await checkImageExists(imageURL);
+                console.warn('Imagen existe:', imageExists);
+                const finalImageURL = imageExists ? imageURL : persona;
                 // Crear un marcador con una imagen personalizada
                 markerElement = document.createElement("div");
-                markerElement.style.backgroundImage = `url(${imageURL})`;
+                markerElement.style.backgroundImage = `url(${finalImageURL})`;
                 markerElement.style.width = "50px"; // Ajusta el tamaño
                 markerElement.style.height = "50px";
                 markerElement.style.backgroundSize = "cover";

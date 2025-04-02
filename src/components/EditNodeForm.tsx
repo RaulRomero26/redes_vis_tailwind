@@ -80,6 +80,7 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
     const [nodeAtributos, setNodeAtributos] = useState<{ [key: string]: string }>({});
     const [edgeAtributos, setEdgeAtributos] = useState<{ [key: string]: string }>({});
     const [label, setLabel] = useState('');
+    const [size, setSize] = useState(15);
     const [nodeDetails, setNodeDetails] = useState<any>(null);
     const [edgeDetails, setEdgeDetails] = useState<any>(null);
     const [newNodeKey, setNewNodeKey] = useState('');
@@ -136,6 +137,7 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
         if (nodeDetails) {
             nodes.update({
                 id: nodeDetails.id,
+                size: size,
                 editables: nodeEditables,
                 visibles: nodeVisibles,
                 atributos: nodeAtributos,
@@ -153,6 +155,7 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
             setNodeEditables(details?.editables || {});
             setNodeVisibles(details?.visibles || {});
             setNodeAtributos(details?.atributos || {});
+            setSize(details?.size || 15);
         }
     }, [nodeId]);
 
@@ -260,6 +263,16 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
                             </button>
                         </div>
                     ))}
+                    <div className="mb-4 flex items-center">
+                        <label className="font-bold">Tamaño:</label>
+                        <input
+                            type="text"
+                            value={size}
+                            onChange={e => setSize(Number(e.target.value))}
+                            className="ml-2 p-1 border border-gray-300 flex-grow"
+                            tabIndex={0} // Añadir tabIndex
+                        />
+                    </div>
                     { nodeDetails?.type !== 'telefono' && nodeDetails?.type !== 'entrada-telefono' && Object.keys(nodeAtributos).filter(key => key !== 'detenciones' && key !== 'detenciones_historicas' && typeof nodeEditables[key] !== 'object').map(key => (
                         <div key={key} className="mb-4 flex items-center">
                             <label className="font-bold">{key}</label>
@@ -312,6 +325,7 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
                                     tabIndex={0} // Añadir tabIndex
                                 />
                             </div>
+                            
                             <button onClick={handleAddNodeAttribute} className="mt-4 p-2 mr-2 bg-green-500 text-white">Añadir Atributo</button>
                         </>
                     ) : (
@@ -319,6 +333,7 @@ export const EditNodeForm = ({ nodeId, edgeId, onRequestClose }: EditNodeFormPro
                     )}
                 </>
             )}
+
 
             <button
                 onClick={handleSave}

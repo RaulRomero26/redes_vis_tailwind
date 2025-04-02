@@ -111,7 +111,7 @@ export const useSaveLoadNetwork = () => {
         const originalHeight = (network as any).canvas.frame.canvas.height;
       
         // Aumentar la resolución del canvas
-        const scaleFactor = 2; // Ajusta este valor según sea necesario
+        const scaleFactor = 4; // Ajusta este valor según sea necesario
         const newWidth = originalWidth * scaleFactor;
         const newHeight = originalHeight * scaleFactor;
       
