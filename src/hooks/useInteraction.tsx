@@ -125,11 +125,38 @@ export const useInteraction = (nodeId: string) => {
         }
     }
 
+    const onSeleccionarNodosConInformacion = () => {
+        console.warn('Seleccionando nodos con información');
+        const allNodes = nodes.get(); // Obtener todos los nodos de la red
+    
+        let nodosConInformacion = allNodes.filter((node: any) => {
+            if (node) {
+                const { atributos } = node;
+                if (atributos && atributos.Telefono) {
+                    // Verificar si hay al menos otra propiedad en `atributos` con un valor válido
+                    const tieneMasInformacion = Object.entries(atributos).some(
+                        ([key, value]) =>
+                            key !== "Telefono" && // Ignorar la propiedad `Telefono`
+                            value !== undefined &&
+                            value !== null &&
+                            value !== "" // Verificar que no sea vacío
+                    );
+                    return tieneMasInformacion; // Retornar true si tiene más información
+                }
+            }
+            return false;
+        }).map((node: any) => node.id); // Obtener solo los IDs de los nodos con información
+    
+        network?.unselectAll();
+        console.log('Nodos con información:', nodosConInformacion);
+        network?.selectNodes(nodosConInformacion);
+    };
     return { 
         onSeleccionarConexionesFinales,
         onSeleccionarPersonas,
         onSeleccionarInspecciones,
         onSeleccionarVehiculos,
-        onSeleccionarTelefonos
+        onSeleccionarTelefonos,
+        onSeleccionarNodosConInformacion
     }
 }

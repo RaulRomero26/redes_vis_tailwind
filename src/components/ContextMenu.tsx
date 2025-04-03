@@ -35,7 +35,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, edgeId, onSearc
   const [_edgeDetails, setEdgeDetails] = useState<any>(null);
 
   const { nodes, edges } = useNetwork();
-  const { onSeleccionarConexionesFinales, onSeleccionarPersonas, onSeleccionarInspecciones, onSeleccionarVehiculos, onSeleccionarTelefonos } = useInteraction(nodeId || '');
+  const { onSeleccionarConexionesFinales, onSeleccionarPersonas, onSeleccionarInspecciones, onSeleccionarVehiculos, onSeleccionarTelefonos,onSeleccionarNodosConInformacion } = useInteraction(nodeId || '');
 
   useEffect(() => {
     if (nodeId) {
@@ -103,6 +103,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, edgeId, onSearc
             <div className="invisible absolute top-0 left-full w-60 transform opacity-0 transition-all duration-300 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 z-50">
               <ul className="mt-1 shadow-lg ring-1 ring-[#1f283a] ring-opacity-5 bg-white">
                 <li className="cursor-pointer hover:bg-gray-200 p-1 px-4" onClick={() => { onSeleccionarConexionesFinales(); onClose(); }}>CONEXIONES Y FINALES</li>
+                <li className="cursor-pointer hover:bg-gray-200 p-1 px-4" onClick={() => { onSeleccionarNodosConInformacion(); onClose(); }}>NODOS CON INFORMACION</li>
                 <li className="cursor-pointer hover:bg-gray-200 p-1 px-4" onClick={() => { onSeleccionarPersonas(); onClose(); }}>PERSONAS</li>
                 <li className="cursor-pointer hover:bg-gray-200 p-1 px-4" onClick={() => { onSeleccionarInspecciones(); onClose(); }}>INSPECCIONES</li>
                 <li className="cursor-pointer hover:bg-gray-200 p-1 px-4" onClick={() => { onSeleccionarVehiculos(); onClose(); }}>VEHICULOS</li>

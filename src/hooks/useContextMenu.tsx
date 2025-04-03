@@ -59,9 +59,9 @@ const useContextMenu = () => {
                 if(opcion === 'Buscar Maestro')handleSearchMaestroPersona(); //Buscar Remisiones e inspecciones por Nombre
                 if(opcion === 'Buscar Remisiones')handleSearchRemisiones(node); //Buscar Remisiones por Nombre
                 if(opcion === 'Consultas') handleSearchInspeccion(); // Buscar inspecciones por nombre
-                if(opcion === 'Telefono Remisiones') handleSearchRemisionesTelefono(node); //Busca Remisiones a partir de un telefono
+                if(opcion === 'Telefono Remisiones') handleSearchRemisionesTelefono(); //Busca Remisiones a partir de un telefono
                 if(opcion === 'Telefono 911') handleSearchTelefono(node); // Buscar un telefono que se encuentra en atributos (911)
-                if(opcion === 'Telefono Contactos') handleSearchContactosTelefono(node); // Buscar un telefono que se encuentra en atributos (Contactos)
+                if(opcion === 'Telefono Contactos') handleSearchContactosTelefono(); // Buscar un telefono que se encuentra en atributos (Contactos)
                 if(opcion === 'Extraer Vehiculos') handleSearchVehiculosInspeccion(); //Busca Vehiculos a partir de una inspeccion
                 if(opcion === 'Extraer Personas') handleSearchPersonasInspeccion(); //Busca Personas a partir de una inspeccion
                 /* --------- FUNCIONES QUE ME EXTRAEN DIRECTAMENTE SIN NECESIDAD DE MODAL ----------- */
@@ -810,107 +810,133 @@ const useContextMenu = () => {
         }
     };
       
-    const handleSearchRemisionesTelefono = async(node:NodeData) => { 
+    const handleSearchRemisionesTelefono = async() => { 
 
-        const respuesta = await searchRemisionesTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
-        //console.log('RESPUESTA:',respuesta.data.remisiones);
-        if (respuesta.data.remisiones.length > 0) {
-            respuesta.data.remisiones.map((item: any) => {
-                const newNode = createNodeData(
-                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
-                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
-                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
-                    "image", 
-                    15, 
-                    {
-                        background:"rgba(255, 255, 255, 0.8)",
-                        border: "rgba(255, 255, 255, 0)",
-                        highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
-                        hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
-                      }, 
-                    "persona",
-                    'persona',
-                    item,
-                    {
-                        "Nombre":item.Nombre,
-                        "Ap_Paterno":item.Ap_Paterno,
-                        "Ap_Materno":item.Ap_Materno,
-                        "Telefono":item.Telefono
-                    },
-                    0,
-                    0
-                );
-                //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode({newNode: newNode, parentPosition: network?.getPosition(node.id)}, (data: any) => {
-                    //console.log('Node added:', data.status);
-                    if (data.status == false) {
-                        console.error('Error adding node');
-                        addEdge({ from: node.id, to: newNode.id, label: 'Telefono dado por' }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
-                    }
-                    else{
-                        if(newNode && data.status==true){
-                            addEdge({ from: node.id, to: newNode.id, label: `Dio el Telefono ${item.Telefono}` }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
-                        }
-                    }
-                });
-            });
+        const selectedNodes = network?.getSelectedNodes() || [];
+        if (selectedNodes.length === 0) {
+            toast.error('No hay nodos seleccionados.');
+            return;
         }
+
+        for (const nodeId of selectedNodes) {
+            const node = nodes.get(nodeId);
+            if (node) {
+                
+                const respuesta = await searchRemisionesTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
+                //console.log('RESPUESTA:',respuesta.data.remisiones);
+                if (respuesta.data.remisiones.length > 0) {
+                    respuesta.data.remisiones.map((item: any) => {
+                        const newNode = createNodeData(
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                            "image", 
+                            15, 
+                            {
+                                background:"rgba(255, 255, 255, 0.8)",
+                                border: "rgba(255, 255, 255, 0)",
+                                highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
+                                hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
+                              }, 
+                            "persona",
+                            'persona',
+                            item,
+                            {
+                                "Nombre":item.Nombre,
+                                "Ap_Paterno":item.Ap_Paterno,
+                                "Ap_Materno":item.Ap_Materno,
+                                "Telefono":item.Telefono
+                            },
+                            0,
+                            0
+                        );
+                        //console.warn('NEW NODE TO EDGE:',newNode);
+                        addNode({newNode: newNode, parentPosition: network?.getPosition(node.id)}, (data: any) => {
+                            //console.log('Node added:', data.status);
+                            if (data.status == false) {
+                                console.error('Error adding node');
+                                addEdge({ from: node.id, to: newNode.id, label: 'Telefono dado por' }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            }
+                            else{
+                                if(newNode && data.status==true){
+                                    addEdge({ from: node.id, to: newNode.id, label: `Dio el Telefono ${item.Telefono}` }, (data: any) => {
+                                        console.log('Edge added:', data);
+                                    });
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        }
+
     };
 // Buscar Contactos referidos a partir del telefono
-    const handleSearchContactosTelefono = async(node:NodeData) => {
-        const respuesta = await buscarContactosPorTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
-        //console.log('RESPUESTA:',respuesta.data.contactos);
-        if(respuesta.data.contactos.length){
-            //console.log('SI HAY TELEFONOS');
-            respuesta.data.contactos.map((item: any) => {
-                //console.log('item:',item);
-                if(item.Telefono === '') return;
-                const newNode = createNodeData(
-                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
-                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
-                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
-                    "image", 
-                    15, 
-                    {
-                        background:"rgba(255, 255, 255, 0.8)",
-                        border: "rgba(255, 255, 255, 0)",
-                        highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
-                        hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
-                      }, 
-                    "persona", 
-                    'persona',
-                    item,
-                    {
-                        "Telefono":item.Telefono,
-                        "Nombre":item.Nombre,
-                        "Ap_Paterno":item.Ap_Paterno,
-                        "Ap_Materno":item.Ap_Materno,
-                    },
-                    0,
-                    0
-                );
-                //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode({newNode: newNode, parentPosition: network?.getPosition(node.id)}, (data: any) => {
-                    //console.log('Node added:', data.status);
-                    if (data.status == false) {
-                        console.error('Error adding node');
-                        addEdge({ from: node.id, to: newNode.id, label: 'Telefono de Contacto' }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
-                    }else{
-                        if(newNode && data.status==true){
-                            addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
-                        }
-                    }
-                });
+    const handleSearchContactosTelefono = async() => {
 
-            });
+        const selectedNodes = network?.getSelectedNodes() || [];
+        if (selectedNodes.length === 0) {
+            toast.error('No hay nodos seleccionados.');
+            return;
+        }
+
+        for (const nodeId of selectedNodes) {
+            const node = nodes.get(nodeId);
+            if (node) {
+
+                const respuesta = await buscarContactosPorTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
+                //console.log('RESPUESTA:',respuesta.data.contactos);
+                if(respuesta.data.contactos.length){
+                    //console.log('SI HAY TELEFONOS');
+                    respuesta.data.contactos.map((item: any) => {
+                        //console.log('item:',item);
+                        if(item.Telefono === '') return;
+                        const newNode = createNodeData(
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                            `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                            "image", 
+                            15, 
+                            {
+                                background:"rgba(255, 255, 255, 0.8)",
+                                border: "rgba(255, 255, 255, 0)",
+                                highlight: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" },
+                                hover: { border: "#7D2447", background: "rgba(255, 255, 255, 0)" }
+                              }, 
+                            "persona", 
+                            'persona',
+                            item,
+                            {
+                                "Telefono":item.Telefono,
+                                "Nombre":item.Nombre,
+                                "Ap_Paterno":item.Ap_Paterno,
+                                "Ap_Materno":item.Ap_Materno,
+                            },
+                            0,
+                            0
+                        );
+                        //console.warn('NEW NODE TO EDGE:',newNode);
+                        addNode({newNode: newNode, parentPosition: network?.getPosition(node.id)}, (data: any) => {
+                            //console.log('Node added:', data.status);
+                            if (data.status == false) {
+                                console.error('Error adding node');
+                                addEdge({ from: node.id, to: newNode.id, label: 'Telefono de Contacto' }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            }else{
+                                if(newNode && data.status==true){
+                                    addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
+                                        console.log('Edge added:', data);
+                                    });
+                                }
+                            }
+                        });
+        
+                    });
+                }
+            }
         }
     };
 
